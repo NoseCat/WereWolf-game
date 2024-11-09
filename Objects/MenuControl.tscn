@@ -1,0 +1,93 @@
+[gd_scene load_steps=2 format=3 uid="uid://500yew0jduyw"]
+
+[ext_resource type="Script" path="res://Scripts/MenuControl.cs" id="1_4c14f"]
+
+[node name="MenuControl" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+script = ExtResource("1_4c14f")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.266667)
+
+[node name="Sensitivity" type="HSlider" parent="."]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -527.0
+offset_top = -84.0
+offset_right = -49.0
+offset_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+size_flags_horizontal = 0
+value = 50.0
+
+[node name="Label" type="Label" parent="Sensitivity"]
+layout_mode = 0
+offset_left = 13.0
+offset_top = 6.0
+offset_right = 93.0
+offset_bottom = 29.0
+text = "Sensitivity"
+
+[node name="Sound" type="HSlider" parent="."]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -522.0
+offset_top = -27.0
+offset_right = -44.0
+offset_bottom = 31.0
+grow_horizontal = 0
+grow_vertical = 2
+size_flags_horizontal = 0
+
+[node name="Resume" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 76.0
+offset_top = -255.0
+offset_right = 327.0
+offset_bottom = -164.0
+grow_vertical = 2
+text = "Resume"
+alignment = 0
+
+[node name="Exit" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 81.0
+offset_top = -131.0
+offset_right = 332.0
+offset_bottom = -40.0
+grow_vertical = 2
+text = "Exit
+"
+alignment = 0
+
+[connection signal="value_changed" from="Sensitivity" to="." method="SensitivityChanged"]
+[connection signal="pressed" from="Resume" to="." method="ResumePressed"]
+[connection signal="pressed" from="Exit" to="." method="ExitPressed"]

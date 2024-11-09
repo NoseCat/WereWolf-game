@@ -1,0 +1,29 @@
+[gd_scene load_steps=2 format=3 uid="uid://gf8equpyalmy"]
+
+[ext_resource type="Script" path="res://Scripts/SlopeDetector.cs" id="1_bdisn"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="SlopeDetector" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0)
+script = ExtResource("1_bdisn")
+
+[node name="RayCastN" type="RayCast3D" parent="SlopeDetector"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.01)
+target_position = Vector3(0, 1, 0)
+collision_mask = 2
+
+[node name="RayCastS" type="RayCast3D" parent="SlopeDetector"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.01)
+target_position = Vector3(0, 1, 0)
+collision_mask = 2
+
+[node name="RayCastW" type="RayCast3D" parent="SlopeDetector"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.01, 0, 0)
+target_position = Vector3(0, 1, 0)
+collision_mask = 2
+
+[node name="RayCastE" type="RayCast3D" parent="SlopeDetector"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.01, 0, 0)
+target_position = Vector3(0, 1, 0)
+collision_mask = 2
