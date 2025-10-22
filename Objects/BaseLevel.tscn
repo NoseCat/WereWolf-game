@@ -26,6 +26,7 @@ ssr_depth_tolerance = 98.01
 script = ExtResource("1_8b05t")
 
 [node name="PlayerSpawner" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.46227, 0)
 
 [node name="Look" type="Marker3D" parent="PlayerSpawner"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1)

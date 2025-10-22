@@ -25,7 +25,7 @@ height = 0.2
 [node name="Player" type="Node3D"]
 
 [node name="CharacterBody3D" type="CharacterBody3D" parent="."]
-collision_layer = 2
+collision_layer = 6
 floor_stop_on_slope = false
 floor_snap_length = 0.2
 script = ExtResource("1_y3nuu")
@@ -302,6 +302,7 @@ target_position = Vector3(0, 1, 0)
 collision_mask = 2
 
 [node name="Mesh" type="MeshInstance3D" parent="CharacterBody3D/HeadCenterMarker/LedgeDetector"]
+visible = false
 mesh = SubResource("SphereMesh_ls703")
 
 [node name="Border" type="MeshInstance3D" parent="CharacterBody3D/HeadCenterMarker/LedgeDetector"]
@@ -348,7 +349,6 @@ mesh = SubResource("SphereMesh_g43b2")
 
 [node name="Camera3D" type="Camera3D" parent="CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
-fov = 90.0
 script = ExtResource("2_l08q1")
 
 [node name="LookAtMarker" type="Marker3D" parent="CharacterBody3D/Camera3D"]

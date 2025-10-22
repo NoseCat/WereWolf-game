@@ -87,20 +87,8 @@ public partial class CharacterBody3d : CharacterBody3D
 	bool WallSlide = false;
 	const float WallWeight = 0.5f;
 
-	// TO DO:
-
-	// Wall sliding & jumping (maybe no)
-
-	// you can grapple on accident while holding space for king jump
-
-	// when sliding off slope there needs to be coyotee
-	// Sliding accumulates speed when jumping
-
-	// Check for wall walking
-	// bug with high slope (maybe check velY.Slide)
-	// bug with stoping before slopes after high slopes
-
-	// Shift release do timer
+	//Visual effects
+	float FOV = 90.0f;
 
 	public override void _Ready()
 	{
@@ -140,7 +128,7 @@ public partial class CharacterBody3d : CharacterBody3D
 
 	public override void _PhysicsProcess(double delta)
 	{
-		HeadCenterMarker.RotationDegrees = new Vector3(0, GetNode<Camera3D>("Camera3D").RotationDegrees.Y, 0);
+		HeadCenterMarker.RotationDegrees = new Vector3(0, GetNode<Camera3D>("Camera3D").RotationDegrees.Y, 0); 
 
 		Vector3 velocity = Velocity;
 		if (velocity.Y != 0.0f)
@@ -243,35 +231,6 @@ public partial class CharacterBody3d : CharacterBody3D
 			}
 		}
 
-		// if ((Input.IsActionJustPressed("Space") || !PressSpaceTimer.IsStopped())
-		// && (IsOnFloor() || !CoyoteeTimer.IsStopped()) && !IsSliding)
-		// {
-		// 	PressSpaceTimer.Stop();
-		// 	JumpCoolDown.Start();
-		// 	coyoteeOnFloorCheck = false;
-		// 	Jump(ref velocity);
-		// }
-
-		// //Wall jump
-		// if(IsOnWall() && !IsOnFloor()
-		// && GrappleSecondJumpTimer.IsStopped())
-		// {
-		// 	WallSlide = true;
-		// 	velocity += WallWeight * GetGravity() * (float)delta;
-		// }
-		// else
-		// {
-		// 	WallSlide = false;
-		// }
-
-		// if(WallSlide && (Input.IsActionJustPressed("Space") || !PressSpaceTimer.IsStopped()))
-		// {
-		// 	var dir = GetNode<Marker3D>("Camera3D/LookAtMarker").GlobalPosition - GlobalPosition;
-		// 	var TestMesh = GetNode<MeshInstance3D>("TestMesh");
-		// 	TestMesh.LookAt(TestMesh.GlobalPosition + dir);
-		// 	StraightJump(ref velocity, dir, 1.0f, 1.0f);
-		// }
-
 		//Grapple second Jump
 		if (Input.IsActionJustPressed("Space") && !GrappleSecondJumpTimer.IsStopped() && !IsOnFloor())
 		{
@@ -340,8 +299,15 @@ public partial class CharacterBody3d : CharacterBody3D
 		}
 		BodyCol.Height = Mathf.Clamp(BodyCol.Height, CrouchHeight, StandHeight);
 
+		//Visual effects
+		Camera3D cam = GetNode<Camera3D>("Camera3D");
+		float speedAddFOV = 20.0f;
+		float fovScale = Math.Clamp(velocity.Length() / (HighSpeed * (float)delta), 0.0f, 1.0f); //??
+		float desiredFOV = FOV + fovScale * speedAddFOV;
+		cam.Fov += (desiredFOV - cam.Fov) * (float)delta * 5.0f;
+
 		//GD.Print(velocity.Length());
-		GD.Print(velocity2.Length());
+		//GD.Print(velocity2.Length());
 		Velocity = velocity;
 		MoveAndSlide();
 	}
@@ -466,7 +432,7 @@ public partial class CharacterBody3d : CharacterBody3D
 
 	public void KingJump(ref Vector3 velocity, float KingJumpRatio, float LeapForce, float JumpForce)
 	{
-		GD.Print(KingJumpRatio);
+		//GD.Print(KingJumpRatio);
 		Vector3 dir;
 		var highPos = Vector3.Up;
 		var lowPos = GetNode<Marker3D>("HeadCenterMarker/GroundJumpBaseMarker/GroundJumpMarker").GlobalPosition - HeadCenterMarker.GlobalPosition;
