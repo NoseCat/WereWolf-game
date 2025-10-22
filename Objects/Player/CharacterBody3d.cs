@@ -3,13 +3,8 @@ using Godot;
 
 public partial class CharacterBody3d : CharacterBody3D
 {
-	//Debug
-	MeshInstance3D TestMesh;
-
 	//General
-	CollisionShape3D Body;
 	CapsuleShape3D BodyCol;
-	Marker3D HeadCenterMarker;
 	Marker3D LookAtMarker;
 	public const float CrouchHeight = 1.0f;
 	public float StandHeight;
@@ -69,11 +64,6 @@ public partial class CharacterBody3d : CharacterBody3D
 	public const float GrappleSecondJumpJumpMod = 0.5f;
 
 	// Slopes
-	RayCast3D RayCastSlopeDetector;
-	RayCast3D RayCastSlopeDetector1;
-	RayCast3D RayCastSlopeDetector2;
-	RayCast3D RayCastSlopeDetector3;
-	RayCast3D RayCastSlopeDetector4;
 	public const float SlopeSlideMagnetism = 3.0f;
 	public const float SlopeAddAccel = 10.0f;
 	public const float SlopeMargin = 5.0f;
@@ -83,18 +73,11 @@ public partial class CharacterBody3d : CharacterBody3D
 	public const float SlopeJumpLeapMod = 1f;
 	public const float SlopeJumpJumpMod = 1f;
 
-	//Wall Jump
-	bool WallSlide = false;
-	const float WallWeight = 0.5f;
-
 	//Visual effects
 	float FOV = 90.0f;
 
 	public override void _Ready()
 	{
-		//Debug
-		TestMesh = GetNode<MeshInstance3D>("TestMesh");
-
 		//General
 		BodyCol = (CapsuleShape3D)GetNode<CollisionShape3D>("CollisionShape3D").Shape;
 		StandHeight = BodyCol.Height;
@@ -104,31 +87,24 @@ public partial class CharacterBody3d : CharacterBody3D
 		PressSpaceTimer = GetNode<Timer>("PressSpaceTimer");
 		CoyoteeTimer = GetNode<Timer>("CoyoteeTimer");
 		JumpCoolDown = GetNode<Timer>("JumpCoolDown");
-		HeadCenterMarker = GetNode<Marker3D>("HeadCenterMarker");
 
 		//GroundJump
-		//Marker3D GroundJumpBaseMarker = GetNode<Marker3D>("HeadCenterMarker/GroundJumpBaseMarker");
-		//GroundJumpBaseMarker.RotationDegrees = new Vector3(LowJumpDegree, 0, 0);
 
 		//Ledge Grapple
-		RayCastHighGrapleSpaceCheck = GetNode<RayCast3D>("HeadCenterMarker/RayCastHighGrapleSpaceCheck");
-		HighGrappleJumpMarker = GetNode<Marker3D>("HeadCenterMarker/HighGrappleJumpMarker");
-		LowGrappleJumpMarker = GetNode<Marker3D>("HeadCenterMarker/LowGrappleJumpMarker");
+		RayCastHighGrapleSpaceCheck = GetNode<RayCast3D>("Grapple/RayCastHighGrapleSpaceCheck");
+		HighGrappleJumpMarker = GetNode<Marker3D>("Grapple/HighGrappleJumpMarker");
+		LowGrappleJumpMarker = GetNode<Marker3D>("Grapple/LowGrappleJumpMarker");
 		GrappleSecondJumpTimer = GetNode<Timer>("GrappleSecondJumpTimer");
 		LedgeGrappleCoolDown = GetNode<Timer>("LedgeGrappleCoolDown");
-		LedgeDetector = GetNode<LedgeDetector>("HeadCenterMarker/LedgeDetector");
-
-		//Slopes
-		RayCastSlopeDetector = GetNode<RayCast3D>("HeadCenterMarker/RayCastSlopeDetector");
-		RayCastSlopeDetector1 = GetNode<RayCast3D>("HeadCenterMarker/RayCastSlopeDetector1");
-		RayCastSlopeDetector2 = GetNode<RayCast3D>("HeadCenterMarker/RayCastSlopeDetector2");
-		RayCastSlopeDetector3 = GetNode<RayCast3D>("HeadCenterMarker/RayCastSlopeDetector3");
-		RayCastSlopeDetector4 = GetNode<RayCast3D>("HeadCenterMarker/RayCastSlopeDetector4");
+		LedgeDetector = GetNode<LedgeDetector>("Grapple/LedgeDetector");
 	}
 
 	public override void _PhysicsProcess(double delta)
 	{
-		HeadCenterMarker.RotationDegrees = new Vector3(0, GetNode<Camera3D>("Camera3D").RotationDegrees.Y, 0); 
+		GetNode<Marker3D>("HeadCenterMarker").RotationDegrees = new Vector3(0, GetNode<Camera3D>("Camera3D").RotationDegrees.Y, 0); 
+		GetNode<Node3D>("JumpBase").RotationDegrees = new Vector3(0, GetNode<Camera3D>("Camera3D").RotationDegrees.Y, 0); 
+		GetNode<Node3D>("Grapple").RotationDegrees = new Vector3(0, GetNode<Camera3D>("Camera3D").RotationDegrees.Y, 0); 
+		GetNode<Node3D>("Slide").RotationDegrees = new Vector3(0, GetNode<Camera3D>("Camera3D").RotationDegrees.Y, 0); 
 
 		Vector3 velocity = Velocity;
 		if (velocity.Y != 0.0f)
@@ -226,7 +202,7 @@ public partial class CharacterBody3d : CharacterBody3D
 				PressSpaceTimer.Stop();
 				JumpCoolDown.Start();
 				coyoteeOnFloorCheck = false;
-				var dir = GetNode<Marker3D>("HeadCenterMarker/BasicJumpBase/BasicJump").GlobalPosition - HeadCenterMarker.GlobalPosition;
+				var dir = GetNode<Marker3D>("JumpBase/BasicJumpBase/BasicJump").GlobalPosition - GetNode<Marker3D>("HeadCenterMarker").GlobalPosition;
 				StraightJump(ref velocity, dir, BasicJumpLeapMod, BasicJumpJumpMod);
 			}
 		}
@@ -255,25 +231,30 @@ public partial class CharacterBody3d : CharacterBody3D
 		}
 
 		//Slope
+		RayCast3D RayCastSlopeFloor = GetNode<RayCast3D>("Slide/RayCastSlopeFloor");
+		RayCast3D RayCastSlopeFloor1 = GetNode<RayCast3D>("Slide/RayCastSlopeFloor1");
+		RayCast3D RayCastSlopeFloor2 = GetNode<RayCast3D>("Slide/RayCastSlopeFloor2");
+		RayCast3D RayCastSlopeFloor3 = GetNode<RayCast3D>("Slide/RayCastSlopeFloor3");
+		RayCast3D RayCastSlopeFloor4 = GetNode<RayCast3D>("Slide/RayCastSlopeFloor4");
 		if ((IsOnFloor() || IsOnWall() || IsSliding) && Crouch &&
-		(RayCastSlopeDetector.IsColliding() ||
-		RayCastSlopeDetector1.IsColliding() || RayCastSlopeDetector2.IsColliding() ||
-		RayCastSlopeDetector3.IsColliding() || RayCastSlopeDetector4.IsColliding()))
+		(RayCastSlopeFloor.IsColliding() ||
+		RayCastSlopeFloor1.IsColliding() || RayCastSlopeFloor2.IsColliding() ||
+		RayCastSlopeFloor3.IsColliding() || RayCastSlopeFloor4.IsColliding()))
 		{
 			IsSliding = true;
 
 			//normal & slope angle
 			Vector3 normal = Vector3.Zero;
-			if (RayCastSlopeDetector.IsColliding())
-				normal += RayCastSlopeDetector.GetCollisionNormal();
-			if (RayCastSlopeDetector1.IsColliding())
-				normal += RayCastSlopeDetector1.GetCollisionNormal();
-			if (RayCastSlopeDetector2.IsColliding())
-				normal += RayCastSlopeDetector2.GetCollisionNormal();
-			if (RayCastSlopeDetector3.IsColliding())
-				normal += RayCastSlopeDetector3.GetCollisionNormal();
-			if (RayCastSlopeDetector4.IsColliding())
-				normal += RayCastSlopeDetector4.GetCollisionNormal();
+			if (RayCastSlopeFloor.IsColliding())
+				normal += RayCastSlopeFloor.GetCollisionNormal();
+			if (RayCastSlopeFloor1.IsColliding())
+				normal += RayCastSlopeFloor1.GetCollisionNormal();
+			if (RayCastSlopeFloor2.IsColliding())
+				normal += RayCastSlopeFloor2.GetCollisionNormal();
+			if (RayCastSlopeFloor3.IsColliding())
+				normal += RayCastSlopeFloor3.GetCollisionNormal();
+			if (RayCastSlopeFloor4.IsColliding())
+				normal += RayCastSlopeFloor4.GetCollisionNormal();
 
 			normal = normal.Normalized();
 			Slide(ref velocity, normal, inputDir, (float)delta);
@@ -421,7 +402,7 @@ public partial class CharacterBody3d : CharacterBody3D
 		Vector3 dir;
 		if (GetNode<Marker3D>("Camera3D/LookAtMarker").GlobalRotationDegrees.X < LowJumpDegree && IsOnFloor())
 		{
-			dir = GetNode<Marker3D>("HeadCenterMarker/GroundJumpBaseMarker/GroundJumpMarker").GlobalPosition - GlobalPosition;
+			dir = GetNode<Marker3D>("JumpBase/GroundJumpBaseMarker/GroundJumpMarker").GlobalPosition - GlobalPosition;
 		}
 		else
 		{
@@ -435,7 +416,7 @@ public partial class CharacterBody3d : CharacterBody3D
 		//GD.Print(KingJumpRatio);
 		Vector3 dir;
 		var highPos = Vector3.Up;
-		var lowPos = GetNode<Marker3D>("HeadCenterMarker/GroundJumpBaseMarker/GroundJumpMarker").GlobalPosition - HeadCenterMarker.GlobalPosition;
+		var lowPos = GetNode<Marker3D>("JumpBase/GroundJumpBaseMarker/GroundJumpMarker").GlobalPosition - GetNode<Marker3D>("HeadCenterMarker").GlobalPosition;
 		//lowPos = lowPos.Slide(highPos);
 		dir = lowPos * (1.0f - KingJumpRatio) + highPos * KingJumpRatio;
 		StraightJump(ref velocity, dir, LeapForce, JumpForce);

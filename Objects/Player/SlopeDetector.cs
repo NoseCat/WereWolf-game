@@ -1,4 +1,3 @@
-using System.IO;
 using Godot;
 
 public partial class SlopeDetector : Node3D
@@ -119,7 +118,7 @@ public partial class SlopeDetector : Node3D
 		return !(N == Vector3.Zero || S == Vector3.Zero || W == Vector3.Zero || E == Vector3.Zero);
 	}
 
-	//Dir will be normalized and multiplied br Lenght
+	//Dir will be normalized and multiplied by Length
 	//Keep in mind its global
 	public float CastRayGetAngle(Vector3 Pos, Vector3 Dir)
 	{
@@ -194,14 +193,14 @@ public partial class SlopeDetector : Node3D
 
             //var collider = result["collider"];
             //GD.Print(collider);
-            return collisionPoint;
             //GD.Print("Ray hit point: ", collisionPoint);
             //GD.Print("Collider: ", collider);
+            return collisionPoint;
         }
         else
         {
-            return Vector3.Zero;
             //GD.Print("No hit detected");
+            return Vector3.Zero;
         }
 	}
 

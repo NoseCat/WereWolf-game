@@ -1,4 +1,3 @@
-using System;
 using Godot;
 
 public partial class LedgeDetector : Node3D
@@ -9,8 +8,6 @@ public partial class LedgeDetector : Node3D
     MeshInstance3D TestMesh;
     MeshInstance3D TestMesh2;
     SlopeDetector SlopeDetector;
-    RayMesh rayMesh;
-    RayMesh rayMesh2;
 
     [Export] float DownStep = 0.1f;
     [Export] float Length = 2.5f;
@@ -34,15 +31,6 @@ public partial class LedgeDetector : Node3D
         End = GetNode<Marker3D>("End");
 
         SlopeDetector = GetNode<SlopeDetector>("SlopeDetector");
-
-        TestMesh = GetNode<MeshInstance3D>("Mesh");
-        TestMesh.TopLevel = true;
-        TestMesh2 = GetNode<MeshInstance3D>("TestMesh2");
-
-        rayMesh = GetNode<RayMesh>("RayMesh");
-        rayMesh2 = GetNode<RayMesh>("RayMesh2");
-        //Vector3 rayStart = new Vector3(0, 1, 0);
-        //Vector3 rayDirection = new Vector3(0, 0, -1); // Forward direction in the -Z axis
     }
 
     //returns Global position
@@ -97,7 +85,7 @@ public partial class LedgeDetector : Node3D
                     //debug
                     //GD.Print(ColAngle * (180/Mathf.Pi));
                     //GD.Print(SlopeDecrease);
-                    TestMesh.GlobalPosition = ColVec;
+                    //TestMesh.GlobalPosition = ColVec;
                     // rayMesh.DrawRay(GlobalPosition + relVec, ColVec, new Color(0, 0, 1));
                     // rayMesh2.DrawRay(GlobalPosition + relVec + vecMinLedgeHeight, GlobalPosition + relVec + vecMinLedgeHeight + setLenght(RotatedDir, NegColLength), new Color(1, 0, 0));
                     // var rayMesh3 = GetNode<RayMesh>("RayMesh3");

@@ -9,7 +9,7 @@ public partial class Level : Node3D
 		var Menu = MenuScene.Instantiate();
 		AddChild(Menu);
 
-		var PlayerScene = GD.Load<PackedScene>("res://Objects/player.tscn");
+		var PlayerScene = GD.Load<PackedScene>("res://Objects/Player/player.tscn");
 		Node3D Player = (Node3D)PlayerScene.Instantiate();
 		AddChild(Player);
 		Player.GlobalPosition = GetNode<Marker3D>("PlayerSpawner").GlobalPosition;
